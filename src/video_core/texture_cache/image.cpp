@@ -119,13 +119,11 @@ void UniqueImage::Create(const vk::ImageCreateInfo& image_ci) {
     VkResult result = vmaCreateImage(allocator, &image_ci_unsafe, &alloc_ci, &unsafe_image,
                                      &allocation, &alloc_info);
     if (result == VK_ERROR_OUT_OF_DEVICE_MEMORY) {
-        // Over the driver-reported VRAM budget. Allow exceeding it so the OS can page memory
-        // instead of aborting the emulator.
         LOG_WARNING(Render_Vulkan,
                     "Image allocation exceeded VRAM budget, retrying without budget limit");
         alloc_ci.flags &= ~VMA_ALLOCATION_CREATE_WITHIN_BUDGET_BIT;
-        result = vmaCreateImage(allocator, &image_ci_unsafe, &alloc_ci, &unsafe_image,
-                                &allocation, &alloc_info);
+        result = vmaCreateImage(allocator, &image_ci_unsafe, &alloc_ci, &unsafe_image, &allocation,
+                                &alloc_info);
     }
     ASSERT_MSG(result == VK_SUCCESS, "Failed allocating image with error {}",
                vk::to_string(vk::Result{result}));
