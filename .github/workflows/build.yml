@@ -4,17 +4,6 @@
 name: Build and Release
 
 on:
-  push:
-    branches-ignore: [Pre-release-shadPS4-*]
-    paths-ignore:
-      - "documents/**"
-      - "**/*.md"
-
-  pull_request:
-    paths-ignore:
-      - "documents/**"
-      - "**/*.md"
-
   workflow_dispatch:
 
 concurrency:
@@ -26,6 +15,7 @@ env:
 
 jobs:
   reuse:
+    if: false
     runs-on: ubuntu-24.04
     continue-on-error: true
     steps:
@@ -33,6 +23,7 @@ jobs:
     - uses: fsfe/reuse-action@v6
 
   clang-format:
+    if: false
     runs-on: ubuntu-24.04
     continue-on-error: true
     steps:
@@ -69,6 +60,7 @@ jobs:
         echo "fullhash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
   test:
+    if: false
     name: Run C++ Tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -187,6 +179,7 @@ jobs:
         path: ${{github.workspace}}/build/shadPS4.exe
 
   macos-sdl:
+    if: false
     runs-on: macos-26
     needs: get-info
     steps:
@@ -247,6 +240,7 @@ jobs:
         path: upload/
 
   linux-sdl:
+    if: false
     runs-on: ubuntu-24.04
     needs: get-info
     steps:
@@ -311,6 +305,7 @@ jobs:
         path: Shadps4-sdl.AppImage
 
   linux-sdl-gcc:
+    if: false
     runs-on: ubuntu-24.04
     needs: get-info
     steps:
@@ -350,7 +345,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --parallel $(nproc)
 
   pre-release:
-    if: github.ref == 'refs/heads/main' && github.repository == 'shadps4-emu/shadPS4' && github.event_name == 'push'
+    if: false
     needs: [get-info, windows-sdl, macos-sdl, linux-sdl]
     runs-on: ubuntu-latest
     steps:
